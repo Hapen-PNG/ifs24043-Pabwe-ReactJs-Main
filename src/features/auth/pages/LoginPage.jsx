@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { IconEye, IconEyeOff, IconLoader2 } from "@tabler/icons-react";
 import useInput from "../../../hooks/useInput";
@@ -9,6 +9,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function LoginPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const email = useInput("");
   const password = useInput("");
   const [reveal, setReveal] = useState(false);
@@ -24,7 +25,11 @@ export default function LoginPage() {
     if (Object.keys(found).length > 0) return;
 
     setSubmitting(true);
-    await dispatch(asyncLogin({ email: email.value, password: password.value }));
+    const authenticated = await dispatch(asyncLogin({ email: email.value, password: password.value }));
+    if (authenticated) {
+      navigate("/", { replace: true });
+      return;
+    }
     setSubmitting(false);
   };
 
@@ -40,6 +45,7 @@ export default function LoginPage() {
           </label>
           <input
             id="login-email-input"
+            name="email"
             type="email"
             autoComplete="email"
             placeholder="nama@del.ac.id"
@@ -57,6 +63,7 @@ export default function LoginPage() {
           <div className="relative">
             <input
               id="login-password-input"
+              name="password"
               type={reveal ? "text" : "password"}
               autoComplete="current-password"
               value={password.value}

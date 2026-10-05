@@ -49,6 +49,39 @@ export default defineConfig(({ mode }) => {
     server: { port, proxy: apiProxy, headers: apiHeaders },
     preview: { port, proxy: apiProxy, headers: apiHeaders },
     define: { DELCOM_BASEURL: JSON.stringify("/api-proxy") },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id.includes("/node_modules/")) return;
+            if (
+              id.includes("/node_modules/react/") ||
+              id.includes("/node_modules/react-dom/") ||
+              id.includes("/node_modules/scheduler/")
+            ) {
+              return "vendor-react";
+            }
+            if (
+              id.includes("/node_modules/react-router-dom/") ||
+              id.includes("/node_modules/react-router/") ||
+              id.includes("/node_modules/@remix-run/router/")
+            ) {
+              return "vendor-router";
+            }
+            if (
+              id.includes("/node_modules/react-redux/") ||
+              id.includes("/node_modules/@reduxjs/toolkit/") ||
+              id.includes("/node_modules/redux/") ||
+              id.includes("/node_modules/redux-thunk/") ||
+              id.includes("/node_modules/reselect/") ||
+              id.includes("/node_modules/immer/")
+            ) {
+              return "vendor-redux";
+            }
+          },
+        },
+      },
+    },
     test: {
       globals: true,
       environment: "jsdom",

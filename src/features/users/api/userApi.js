@@ -1,7 +1,7 @@
 import { callApi } from "../../../helpers/apiHelper";
 
 export const fetchUsers = () => callApi("/users");
-export const fetchMe = () => callApi("/auth/me");
+export const fetchMe = () => callApi("/users/me");
 export const putMe = (payload) => callApi("/users/me", { method: "PUT", body: payload });
 export const postMyPhoto = (file) => {
   const form = new FormData();

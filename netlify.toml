@@ -1,8 +1,3 @@
 [build]
   command = "npm run build"
   publish = "dist"
-
-[[headers]]
-  for = "/api-proxy/*"
-  [headers.values]
-    Access-Control-Allow-Headers = "Authorization, Content-Type, Accept"

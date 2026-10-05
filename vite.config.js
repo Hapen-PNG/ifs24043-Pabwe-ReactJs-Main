@@ -35,10 +35,6 @@ const apiProxy = {
   },
 };
 
-const apiHeaders = {
-  "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept",
-};
-
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
@@ -46,41 +42,12 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tailwindcss(), inlineCss()],
-    server: { port, proxy: apiProxy, headers: apiHeaders },
-    preview: { port, proxy: apiProxy, headers: apiHeaders },
-    define: { DELCOM_BASEURL: JSON.stringify("/api-proxy") },
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks(id) {
-            if (!id.includes("/node_modules/")) return;
-            if (
-              id.includes("/node_modules/react/") ||
-              id.includes("/node_modules/react-dom/") ||
-              id.includes("/node_modules/scheduler/")
-            ) {
-              return "vendor-react";
-            }
-            if (
-              id.includes("/node_modules/react-router-dom/") ||
-              id.includes("/node_modules/react-router/") ||
-              id.includes("/node_modules/@remix-run/router/")
-            ) {
-              return "vendor-router";
-            }
-            if (
-              id.includes("/node_modules/react-redux/") ||
-              id.includes("/node_modules/@reduxjs/toolkit/") ||
-              id.includes("/node_modules/redux/") ||
-              id.includes("/node_modules/redux-thunk/") ||
-              id.includes("/node_modules/reselect/") ||
-              id.includes("/node_modules/immer/")
-            ) {
-              return "vendor-redux";
-            }
-          },
-        },
-      },
+    server: { port, proxy: apiProxy },
+    preview: { port, proxy: apiProxy },
+    define: {
+      DELCOM_BASEURL: JSON.stringify(
+        env.VITE_DELCOM_BASEURL || "https://open-api.delcom.org/api/v1"
+      ),
     },
     test: {
       globals: true,

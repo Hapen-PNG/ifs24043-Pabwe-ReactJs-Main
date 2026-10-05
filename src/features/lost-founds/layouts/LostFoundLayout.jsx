@@ -11,32 +11,21 @@ import { asyncGetProfile } from "../../users/states/action";
 export default function LostFoundLayout() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
+  const profile = useSelector((state) => state.users.profile);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [checkedToken, setCheckedToken] = useState(null);
 
   useEffect(() => {
     if (!token) return;
-
-    let active = true;
     dispatch(asyncGetProfile()).then((valid) => {
-      if (!active) return;
-      if (!valid) {
-        dispatch(asyncLogout());
-        return;
-      }
-      setCheckedToken(token);
+      if (!valid) dispatch(asyncLogout());
     });
-
-    return () => {
-      active = false;
-    };
   }, [token, dispatch]);
 
   const closeDrawer = () => setDrawerOpen(false);
 
   if (!token) return <Navigate to="/auth/login" replace />;
 
-  if (checkedToken !== token) {
+  if (!profile) {
     return (
       <div className="min-h-screen lg:pl-72">
         <SidebarComponent open={drawerOpen} onClose={closeDrawer} />

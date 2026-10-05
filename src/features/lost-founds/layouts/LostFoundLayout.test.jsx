@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { act, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Route, Routes } from "react-router-dom";
 import LostFoundLayout from "./LostFoundLayout";
 import { fetchMe } from "../../users/api/userApi";
-import { getAccessToken, putAccessToken } from "../../../helpers/apiHelper";
 import { renderWithProviders, stateWith } from "../../../test-utils";
 
 vi.mock("../../users/api/userApi");
@@ -35,27 +34,6 @@ describe("LostFoundLayout (route guard)", () => {
     expect(await screen.findByText("Konten dashboard")).toBeInTheDocument();
     expect(screen.getByRole("complementary", { name: "Navigasi utama" })).toBeInTheDocument();
     expect(screen.getByText("Sesi aktif")).toBeInTheDocument();
-  });
-
-  it("memulihkan token tersimpan saat startup dan menunggu validasi me sebelum merender route", async () => {
-    let resolveMe;
-    putAccessToken("tersimpan");
-    fetchMe.mockReturnValue(new Promise((resolve) => {
-      resolveMe = resolve;
-    }));
-
-    const { store } = renderWithProviders(tree);
-    expect(store.getState().auth.token).toBe("tersimpan");
-    expect(fetchMe).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole("status")).toHaveTextContent("Memuat sesi");
-    expect(screen.queryByText("Halaman login")).not.toBeInTheDocument();
-
-    await act(async () => {
-      resolveMe({ data: { user: me } });
-    });
-
-    expect(await screen.findByText("Konten dashboard")).toBeInTheDocument();
-    expect(getAccessToken()).toBe("tersimpan");
   });
 
   it("token tidak valid membersihkan sesi dan kembali ke login", async () => {

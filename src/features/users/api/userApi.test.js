@@ -5,11 +5,11 @@ import { callApi } from "../../../helpers/apiHelper";
 vi.mock("../../../helpers/apiHelper", () => ({ callApi: vi.fn().mockResolvedValue({}) }));
 beforeEach(() => vi.clearAllMocks());
 
-it("GET /users dan /auth/me", async () => {
+it("GET /users dan /users/me", async () => {
   await fetchUsers();
   await fetchMe();
   expect(callApi).toHaveBeenNthCalledWith(1, "/users");
-  expect(callApi).toHaveBeenNthCalledWith(2, "/auth/me");
+  expect(callApi).toHaveBeenNthCalledWith(2, "/users/me");
 });
 
 it("PUT /users/me dan /users/me/password", async () => {

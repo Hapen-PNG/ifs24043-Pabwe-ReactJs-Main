@@ -11,7 +11,7 @@ export const buildUrl = (path, params = {}) => {
   Object.entries(params)
     .filter(([, value]) => `${value ?? ""}` !== "")
     .forEach(([key, value]) => url.searchParams.append(key, value));
-  return `${url.pathname}${url.search}`;
+  return url.toString();
 };
 
 export async function callApi(path, { method = "GET", body, form, params } = {}) {

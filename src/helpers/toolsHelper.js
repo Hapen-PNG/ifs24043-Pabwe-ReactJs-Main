@@ -6,7 +6,6 @@ const fire = async (options) => {
 };
 
 const ACCENT = "#3730a3";
-const DELCOM_MEDIA_ORIGIN = "https://open-api.delcom.org";
 
 export const showSuccessDialog = (message) =>
   fire({ icon: "success", title: "Berhasil", text: message, confirmButtonColor: ACCENT });
@@ -40,7 +39,7 @@ export const formatDate = (iso) => {
 export const resolveMediaUrl = (path) => {
   if (!path) return null;
   if (/^https?:\/\//.test(path)) return path;
-  return `${DELCOM_MEDIA_ORIGIN}/${path.replace(/^\//, "")}`;
+  return `${new URL(DELCOM_BASEURL).origin}/${path.replace(/^\//, "")}`;
 };
 
 export const isDone = (item) => Boolean(Number(item?.is_completed));

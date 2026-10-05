@@ -35,6 +35,10 @@ const apiProxy = {
   },
 };
 
+const apiHeaders = {
+  "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept",
+};
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
@@ -42,13 +46,9 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tailwindcss(), inlineCss()],
-    server: { port, proxy: apiProxy },
-    preview: { port, proxy: apiProxy },
-    define: {
-      DELCOM_BASEURL: JSON.stringify(
-        env.VITE_DELCOM_BASEURL || "https://open-api.delcom.org/api/v1"
-      ),
-    },
+    server: { port, proxy: apiProxy, headers: apiHeaders },
+    preview: { port, proxy: apiProxy, headers: apiHeaders },
+    define: { DELCOM_BASEURL: JSON.stringify("/api-proxy") },
     test: {
       globals: true,
       environment: "jsdom",
